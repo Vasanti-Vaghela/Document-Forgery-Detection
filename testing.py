@@ -32,3 +32,20 @@ def ela_check(image_path, output_path="ela_output.jpg", quality=90):
 if __name__ == "__main__":
     ela_check("testing1.jpeg", "ela1.jpg")
     ela_check("Testing2.jpeg", "ela2.jpg")
+
+
+
+if max_diff > 20:
+    print("⚠️ Suspicious / Edited")
+else:
+    print("✅ Likely Original")
+
+
+import numpy as np
+
+ela_array = np.array(ela_image)
+
+# Bright pixels detect
+mask = ela_array > 200
+
+print("Suspicious pixels:", np.sum(mask))
