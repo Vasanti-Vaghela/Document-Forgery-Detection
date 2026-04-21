@@ -1,3 +1,4 @@
+
 import pytesseract
 from PIL import Image
 
@@ -12,3 +13,4 @@ text2 = pytesseract.image_to_string(img2)
 
 print(text)
 print(text2)
+
