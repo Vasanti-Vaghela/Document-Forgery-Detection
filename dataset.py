@@ -24,4 +24,4 @@ for i in range(300):
 df = pd.DataFrame(data)
 df.to_csv("data.csv", index=False)
 
-print("✅ data.csv created")
+print("data.csv created")
