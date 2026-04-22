@@ -1,74 +1,58 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 
 # Load image
-img = cv2.imread("document2.png")
+img = cv2.imread("document1.png")
 if img is None:
     print("Image not found")
     exit()
 
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-# ORB feature detection
-orb = cv2.ORB_create(3000)
-keypoints, descriptors = orb.detectAndCompute(gray, None)
+# 🔥 STEP 1: Strong threshold (important fix)
+_, thresh = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY_INV)
 
-if descriptors is None:
-    print("No features detected")
-    exit()
+# 🔥 STEP 2: Thicken text (VERY IMPORTANT)
+kernel = np.ones((3,3), np.uint8)
+thresh = cv2.dilate(thresh, kernel, iterations=2)
 
-# KNN Matching
-bf = cv2.BFMatcher(cv2.NORM_HAMMING)
-matches = bf.knnMatch(descriptors, descriptors, k=2)
+# 🔥 STEP 3: Find contours
+contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-# Relaxed Lowe's ratio test
-good = []
-for m, n in matches:
-    if m.queryIdx != m.trainIdx and m.distance < 0.9 * n.distance:
-        good.append(m)
+# Filter large text regions
+regions = []
+for cnt in contours:
+    x, y, w, h = cv2.boundingRect(cnt)
+    if w > 80 and h > 20:   # tuned for your image
+        regions.append((x, y, w, h))
 
-# Fallback if too few matches
-if len(good) < 10:
-    print("Using relaxed matching fallback...")
-    for m, n in matches:
-        if m.queryIdx != m.trainIdx:
-            good.append(m)
+# Sort by top position (optional)
+regions = sorted(regions, key=lambda r: r[1])
 
-# Collect points
-points = np.array([keypoints[m.queryIdx].pt for m in good])
-print("Duplicate points:", len(points))
-
-# Clustering
-clusters = []
-for p in points:
-    added = False
-    for cluster in clusters:
-        if np.linalg.norm(p - cluster[0]) < 80:  # relaxed
-            cluster.append(p)
-            added = True
-            break
-    if not added:
-        clusters.append([p])
-
-# Draw bounding boxes
 output = img.copy()
-for cluster in clusters:
-    if len(cluster) < 5:  # relaxed
-        continue
 
-    cluster = np.array(cluster).astype(np.int32)
-    x, y, w, h = cv2.boundingRect(cluster)
+# 🔥 STEP 4: Compare regions
+for i in range(len(regions)):
+    x1, y1, w1, h1 = regions[i]
+    roi1 = gray[y1:y1+h1, x1:x1+w1]
 
-    cv2.rectangle(output, (x, y), (x+w, y+h), (0, 0, 255), 2)
-    cv2.putText(output, "Duplicate", (x, y-10),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
+    for j in range(i+1, len(regions)):
+        x2, y2, w2, h2 = regions[j]
+        roi2 = gray[y2:y2+h2, x2:x2+w2]
+
+        # Resize to same size
+        roi2_resized = cv2.resize(roi2, (w1, h1))
+
+        # Compare similarity
+        diff = cv2.absdiff(roi1, roi2_resized)
+        score = np.mean(diff)
+
+        # 🔥 STRICT match condition
+        if score < 15:
+            cv2.rectangle(output, (x1, y1), (x1+w1, y1+h1), (0,0,255), 2)
+            cv2.rectangle(output, (x2, y2), (x2+w2, y2+h2), (0,0,255), 2)
 
 # Show result
-output_rgb = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
-
-plt.figure(figsize=(10,10))
-plt.imshow(output_rgb)
-plt.title("Duplicate Detection (C1)")
-plt.axis("off")
-plt.show()
+cv2.imshow("FINAL RESULT", output)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
