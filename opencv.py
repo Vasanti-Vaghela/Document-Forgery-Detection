@@ -19,8 +19,14 @@
 #17. cv2.Sobel() - to apply the Sobel operator to an image
 #18. cv2.Laplacian() - to apply the Laplacian operator to an image
 #19. cv2.Canny() - to detect edges in an image  
-import cv2  
+import cv2
+import pytesseract  
 img=cv2.imread("bill-img.png")
-cv2.imshow("bill",img)
+
+gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+cv2.imshow("gray",gray)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+_,thresh=cv2.threshold(gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+text=pytesseract.image_to_string(thresh)
+print("extracted text using open cv:\n", text)
