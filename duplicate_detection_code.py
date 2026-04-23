@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Load image
-img = cv2.imread("document1.png")
+img = cv2.imread("document.png")
 if img is None:
     print("Image not found")
     exit()
@@ -14,20 +14,20 @@ _, thresh = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY_INV)
 
 # 🔥 STEP 2: Thicken text (VERY IMPORTANT)
 kernel = np.ones((3,3), np.uint8)
-thresh = cv2.dilate(thresh, kernel, iterations=2)
+thresh = cv2.dilate(thresh, kernel, iterations=2) #2 to 1
 
 # 🔥 STEP 3: Find contours
-contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
 # Filter large text regions
 regions = []
 for cnt in contours:
     x, y, w, h = cv2.boundingRect(cnt)
-    if w > 80 and h > 20:   # tuned for your image
+    if w > 30 and h > 10:   # tuned for your image
         regions.append((x, y, w, h))
 
 # Sort by top position (optional)
-regions = sorted(regions, key=lambda r: r[1])
+regions = sorted(regions, key=lambda r: (r[1],r[0]))
 
 output = img.copy()
 
