@@ -31,7 +31,7 @@ kernel=np.ones((3,3),np.uint8)
 thresh=cv2.morphologyEx(thresh,cv2.MORPH_CLOSE,kernel)
 custom_config=r'--oem 3 --psm 6'
 cv2.imshow("thresh",thresh)
-cv2.waitKey(0)      
+cv2.waitKey(0)       
 cv2.destroyAllWindows()
 text=pytesseract.image_to_string(thresh,config=custom_config)
 print("extracted text using open cv:\n", text)
