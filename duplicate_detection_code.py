@@ -1,144 +1,66 @@
-#text_columns = ['name', 'address']   # change this based on dataset
-
-#df['combined'] = df[text_columns].fillna('').agg(' '.join, axis=1)
-import pandas as pd
+import cv2
 import numpy as np
-import re
-from rapidfuzz import fuzz
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from skimage.metrics import structural_similarity as ssim
 
-# =========================
-# 🔴 STEP 1: LOAD DATASET
-# =========================
-# 👉 CHANGE THIS: file name as given in hackathon
-file_path = "data.csv"  
+# Load image
+img = cv2.imread("document.png")
+if img is None:
+    print("Image not found")
+    exit()
 
-df = pd.read_csv(file_path)   # 👉 if excel: use pd.read_excel("file.xlsx")
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-print("Columns in dataset:", df.columns)
-print("\nSample Data:\n", df.head())
+# STEP 1: Threshold
+_, thresh = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY_INV)
 
+# STEP 2: Thicken text
+kernel = np.ones((3,3), np.uint8)
+thresh = cv2.dilate(thresh, kernel, iterations=2)
 
-# =========================
-# 🔴 STEP 2: SELECT COLUMNS
-# =========================
-# 👉 CHANGE THESE: based on dataset columns
-# Example: ['hospital_name', 'address', 'city']
-text_columns = ['name', 'address']  
+# STEP 3: Find contours
+contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-df['combined'] = df[text_columns].fillna('').agg(' '.join, axis=1)
+# Filter regions
+regions = []
+for cnt in contours:
+    x, y, w, h = cv2.boundingRect(cnt)
+    if 30 < w < 500 and 10 < h < 150:
+        regions.append((x, y, w, h))
 
+# Sort regions
+regions = sorted(regions, key=lambda r: (r[1], r[0]))
 
-# =========================
-# STEP 3: BEFORE CLEANING
-# =========================
-print("\nBefore Cleaning:\n", df['combined'].head(5))
+print("Total regions:", len(regions))
 
+output = img.copy()
 
-# =========================
-# 🔴 STEP 4: CLEAN TEXT
-# =========================
-def clean_text(text):
-    text = text.lower()
-    
-#👉 OPTIONAL: remove common hospital words (improves accuracy)
-    text = re.sub(r'hospital|hosp|clinic|medicare', '', text)
-    
-    text = re.sub(r'[^a-z0-9 ]', '', text)
-    text = re.sub(r'\s+', ' ', text)
-    return text.strip()
+# STEP 4: Compare regions
+for i in range(len(regions)):
+    x1, y1, w1, h1 = regions[i]
+    roi1 = gray[y1:y1+h1, x1:x1+w1]
 
-df['cleaned'] = df['combined'].apply(clean_text)
+    for j in range(i+1, len(regions)):
+        x2, y2, w2, h2 = regions[j]
+        roi2 = gray[y2:y2+h2, x2:x2+w2]
 
+        # skip very different sizes
+        if abs(w1 - w2) > 10 or abs(h1 - h2) > 5:
+            continue
 
-# =========================
-# STEP 5: AFTER CLEANING
-# =========================
-print("\nAfter Cleaning:\n", df['cleaned'].head(5))
+        # resize for speed
+        roi1_resized = cv2.resize(roi1, (80, 40))
+        roi2_resized = cv2.resize(roi2, (80, 40))
 
+        # SSIM comparison
+        score, _ = ssim(roi1_resized, roi2_resized, full=True, win_size=7)
 
-# =========================
-# 🔴 STEP 6: (OPTIONAL) ID-BASED DUPLICATES
-# =========================
-# 👉 CHANGE COLUMN NAME if dataset has ID (like 'registration_id')
-id_column = None  # e.g., 'registration_id'
+        # match condition
+        if score > 0.88:# do it 0.88
+            cv2.rectangle(output, (x1, y1), (x1+w1, y1+h1), (0,0,255), 2)
+            cv2.rectangle(output, (x2, y2), (x2+w2, y2+h2), (0,0,255), 2)
+            break   # stop extra comparisons for this region
 
-if id_column and id_column in df.columns:
-    exact_duplicates = df[df.duplicated(id_column)]
-    print("\nExact duplicates based on ID:", len(exact_duplicates))
-
-
-# =========================
-# 🔴 STEP 7: FUZZY MATCHING
-# =========================
-# 👉 CHANGE THRESHOLD (80–90 best)
-fuzzy_threshold = 85  
-
-fuzzy_duplicates = []
-
-for i in range(len(df)):
-    for j in range(i+1, len(df)):
-        score = fuzz.ratio(df['cleaned'][i], df['cleaned'][j])
-        if score > fuzzy_threshold:
-            fuzzy_duplicates.append((i, j, score))
-
-print("\nFuzzy Duplicates Found:", len(fuzzy_duplicates))
-
-
-# =========================
-# 🔴 STEP 8: TF-IDF + COSINE
-# =========================
-vectorizer = TfidfVectorizer()
-X = vectorizer.fit_transform(df['cleaned'])
-
-similarity_matrix = cosine_similarity(X)
-
-# 👉 CHANGE THRESHOLD (0.75–0.85 best for messy data)
-tfidf_threshold = 0.8  
-
-tfidf_duplicates = []
-
-for i in range(len(df)):
-    for j in range(i+1, len(df)):
-        if similarity_matrix[i][j] > tfidf_threshold:
-            tfidf_duplicates.append((i, j, similarity_matrix[i][j]))
-
-print("TF-IDF Duplicates Found:", len(tfidf_duplicates))
-
-
-# =========================
-# STEP 9: SHOW RESULTS
-# =========================
-def show_duplicates(duplicates, method_name):
-    print(f"\nTop {method_name} Duplicates:\n")
-    for i, j, score in duplicates[:5]:
-        print(f"Row {i} ↔ Row {j} | Score: {score:.2f}")
-        print("Text 1:", df['combined'][i])
-        print("Text 2:", df['combined'][j])
-        print("-"*50)
-
-show_duplicates(fuzzy_duplicates, "Fuzzy")
-show_duplicates(tfidf_duplicates, "TF-IDF")
-
-
-# =========================
-# STEP 10: SAVE OUTPUT
-# =========================
-output = []
-
-for i, j, score in tfidf_duplicates:
-    output.append({
-        "row_1": i,
-        "row_2": j,
-        "similarity": score,
-        "text_1": df['combined'][i],
-        "text_2": df['combined'][j]
-    })
-
-output_df = pd.DataFrame(output)
-
-# 👉 CHANGE FILE NAME if needed
-output_df.to_csv("duplicates_output.csv", index=False)
-
-print("\n  Duplicate results saved to duplicates_output.csv")
+# Show result
+cv2.imshow("FINAL RESULT", output)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
