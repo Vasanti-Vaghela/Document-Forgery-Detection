@@ -1,6 +1,10 @@
 import json
+from yaml_generator import create_yaml
 
-# Category decide function
+
+
+# CATEGORY DECISION FUNCTION
+
 def decide_category(features):
 
     if features.get("duplicate"):
@@ -34,7 +38,9 @@ def decide_category(features):
         return "C10"
 
 
-# Process full document (multiple regions)
+
+# PROCESS DOCUMENT FUNCTION
+
 def process_document(file_name, detections):
 
     results = []
@@ -52,24 +58,44 @@ def process_document(file_name, detections):
     return results
 
 
-# MAIN BLOCK 
+
+# MAIN BLOCK (TESTING)
+
 if __name__ == "__main__":
 
+    # Dummy detections (testing)
     detections = [
-    {
-        "bbox": [10, 20, 100, 200],
-        "features": {"duplicate": True}
-    },
-    {
-        "bbox": [50, 60, 150, 250],
-        "features": {"overwrite": True}
-    },
-    {
-        "bbox": [80, 90, 180, 280],
-        "features": {"ai_generated": True}
-    }
-]
+        {
+            "bbox": [10, 20, 100, 200],
+            "features": {"duplicate": True}
+        },
+        {
+            "bbox": [50, 60, 150, 250],
+            "features": {"overwrite": True}
+        },
+        {
+            "bbox": [80, 90, 180, 280],
+            "features": {"ai_generated": True}
+        }
+    ]
 
+    # JSON OUTPUT
     output = process_document("sample.pdf", detections)
 
+    print("JSON Output:\n")
     print(json.dumps(output, indent=2))
+
+
+    
+    # YAML OUTPUT
+    
+    yaml_output = create_yaml([
+        {
+            "bbox": item["bbox"],
+            "category": item["Category_ID"]
+        }
+        for item in output
+    ])
+
+    print("\nYAML Output:\n")
+    print(yaml_output)
