@@ -2,13 +2,14 @@ import cv2
 import numpy as np
 
 # Load image
-img = cv2.imread("document3.png")
+img_path = r"C:\Users\chanc\OneDrive\Documents\chanchal_0ss\Document-Forgery-Detection\Claim_Documents\3fa713df-544d-4311-9fc6-1654977686c3.jpeg"
+
+img = cv2.imread(img_path)
 if img is None:
     print("Image not found")
     exit()
 
 output = img.copy()
-
 
 # STEP 1: Preprocess
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -25,16 +26,15 @@ boxes = [cv2.boundingRect(c) for c in contours]
 # Remove noise
 boxes = [b for b in boxes if b[2] > 10 and b[3] > 10]
 
-# STEP 3: Group boxes into lines (based on Y coordinate)
+# STEP 3: Group boxes into lines
 lines = []
-y_threshold = 15  # adjust based on font size
+y_threshold = 15
 
-for box in sorted(boxes, key=lambda b: b[1]):  # sort by y
+for box in sorted(boxes, key=lambda b: b[1]):
     x, y, w, h = box
     placed = False
 
     for line in lines:
-        # compare with first box of line
         _, ly, _, lh = line[0]
         if abs(y - ly) < y_threshold:
             line.append(box)
@@ -46,14 +46,11 @@ for box in sorted(boxes, key=lambda b: b[1]):  # sort by y
 
 # STEP 4: Process each line
 for line in lines:
-    
-    # sort left → right
     line = sorted(line, key=lambda b: b[0])
     
     spaces = []
     pairs = []
 
-    # calculate gaps
     for i in range(len(line) - 1):
         x1, y1, w1, h1 = line[i]
         x2, y2, w2, h2 = line[i + 1]
@@ -68,27 +65,18 @@ for line in lines:
         continue
 
     mean_space = np.mean(spaces)
-
-    # threshold for this line
     threshold = mean_space * 1.8
 
-    # STEP 5: Mark suspicious
+    # STEP 5: Only RED suspicious boxes
     for i, j, gap in pairs:
         if gap > threshold:
             x, y, w, h = line[j]
-            
-            # RED box for suspicious
             cv2.rectangle(output, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
-    # draw normal boxes (optional)
-    for (x, y, w, h) in line:
-        cv2.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), 1)
-
 # STEP 6: Show result
-cv2.imshow("Forgery Detection (Line-wise)", output)
+cv2.imshow("Forgery Detection (Only Suspicious)", output)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 # Save output
-
-cv2.imwrite("linewise_forgery.png", output)
+cv2.imwrite("linewise_forgery_red_only.png", output)

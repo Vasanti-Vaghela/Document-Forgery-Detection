@@ -1,8 +1,9 @@
 import cv2
 import numpy as np
+import os
 from skimage.metrics import structural_similarity as ssim
 
-# Image path
+#  Image path
 img_path = r"C:\Users\chanc\OneDrive\Documents\chanchal_0ss\Document-Forgery-Detection\Claim_Documents\3fa713df-544d-4311-9fc6-1654977686c3.jpeg"
 
 img = cv2.imread(img_path)
@@ -32,6 +33,9 @@ regions = sorted(regions, key=lambda r: (r[1], r[0]))
 
 output = img.copy()
 
+#  Threshold
+threshold = 0.8
+
 # STEP 4: Compare regions
 for i in range(len(regions)):
     x1, y1, w1, h1 = regions[i]
@@ -49,13 +53,24 @@ for i in range(len(regions)):
 
         score, _ = ssim(roi1_resized, roi2_resized, full=True, win_size=7)
 
-        if score > 0.88:
+        if score > threshold:
             cv2.rectangle(output, (x1, y1), (x1+w1, y1+h1), (0,0,255), 2)
             cv2.rectangle(output, (x2, y2), (x2+w2, y2+h2), (0,0,255), 2)
             break
 
+#  SAVE OUTPUT (NEW FILE NAME)
+save_folder = "result"
+os.makedirs(save_folder, exist_ok=True)
 
+# new name add karo
+file_name = "processed_" + os.path.basename(img_path)
+save_path = os.path.join(save_folder, file_name)
+
+cv2.imwrite(save_path, output)
+
+#  SHOW RESULT
 cv2.imshow("Result", output)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
+print(" Saved as:", save_path)
