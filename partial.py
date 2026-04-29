@@ -16,7 +16,7 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 def pdf_to_images(pdf_path):
     paths = []
 
-    images = convert_from_path(pdf_path, poppler_path=r"C:\Users\neela\Downloads\Release-25.07.0-0\poppler-25.07.0\Library\bin")
+    images = convert_from_path(pdf_path, poppler_path=r"C:\Program Files\poppler-25.07.0\Library\bin")
 
 
     for i, img in enumerate(images):
