@@ -25,7 +25,7 @@ def preprocess_image(img):
     return dilated
 
 
-# -------------------------------
+# ------------------------------
 # Get Bounding Boxes
 # -------------------------------
 def get_valid_boxes(processed_img):
