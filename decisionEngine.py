@@ -2,51 +2,50 @@ import json
 from yaml_generator import create_yaml
 
 
-
 # CATEGORY DECISION FUNCTION
-
 def decide_category(features):
 
     if features.get("duplicate"):
         return "C1"
 
-    elif features.get("overwrite"):
+    if features.get("overwrite"):
         return "C2"
 
-    elif features.get("added"):
+    if features.get("added"):
         return "C3"
 
-    elif features.get("removed"):
+    if features.get("removed"):
         return "C4"
 
-    elif features.get("merged"):
+    if features.get("merged"):
         return "C5"
 
-    elif features.get("watermark"):
+    if features.get("watermark"):
         return "C6"
 
-    elif features.get("spacing"):
+    if features.get("spacing"):
         return "C7"
 
-    elif features.get("ai_generated"):
+    if features.get("ai_generated"):
         return "C8"
 
-    elif features.get("partial_edit"):
+    if features.get("partial_edit"):
         return "C9"
 
-    else:
-        return "C10"
-
+    return None   # IMPORTANT FIX
 
 
 # PROCESS DOCUMENT FUNCTION
-
 def process_document(file_name, detections):
 
     results = []
 
     for item in detections:
         category = decide_category(item["features"])
+
+        # Skip invalid detections
+        if category is None:
+            continue
 
         results.append({
             "link": file_name,
@@ -56,8 +55,6 @@ def process_document(file_name, detections):
         })
 
     return results
-
-
 
 # MAIN BLOCK (TESTING)
 
@@ -76,6 +73,10 @@ if __name__ == "__main__":
         {
             "bbox": [80, 90, 180, 280],
             "features": {"ai_generated": True}
+        },
+        {
+            "bbox": [100, 120, 200, 300],
+            "features": {}   # should be skipped
         }
     ]
 
@@ -86,9 +87,7 @@ if __name__ == "__main__":
     print(json.dumps(output, indent=2))
 
 
-    
     # YAML OUTPUT
-    
     yaml_output = create_yaml([
         {
             "bbox": item["bbox"],
