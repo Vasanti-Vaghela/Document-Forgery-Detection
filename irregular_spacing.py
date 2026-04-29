@@ -27,7 +27,7 @@ def preprocess_image(img):
 
 # ------------------------------
 # Get Bounding Boxes
-# -------------------------------
+# ------------------------------
 def get_valid_boxes(processed_img):
     contours, _ = cv2.findContours(processed_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     boxes = [cv2.boundingRect(c) for c in contours]
