@@ -129,7 +129,7 @@ def detect_forgery(image_path):
 # Run
 # -------------------------------
 if __name__ == "__main__":
-    img_path = r"C:\Users\chanc\OneDrive\Documents\chanchal_0ss\Document-Forgery-Detection\Claim_Documents\3fa713df-544d-4311-9fc6-1654977686c3.jpeg"
+    img_path = r"C:\Users\chanc\OneDrive\Documents\chanchal_0ss\Document-Forgery-Detection\Claim_Documents\2e808852-4878-4561-80be-1455a51ef606.jpeg"
 
     result = detect_forgery(img_path)
 
