@@ -51,7 +51,7 @@ def extract_text(img):
 # ---------------------------
 # AI Detection (Heuristic)
 # ---------------------------
-def detect_regions(image):
+def detect_regions(image, show=False):
     h, w, _ = image.shape
     regions = []
 
@@ -86,8 +86,8 @@ def run():
         img = cv2.imread(path)
 
         # OCR
-        text = extract_text(img)
-        print("Text:", text[:100])
+        # text = extract_text(img)
+        # print("Text:", text[:100])
 
         # Detect
         regions = detect_regions(img)
