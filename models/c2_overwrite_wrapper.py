@@ -1,4 +1,4 @@
-from C2_overwrite import detect_overwrite_c2
+from C2_Overwrite import detect_overwrite_c2
 
 def run_c2(image_path):
     img, detections = detect_overwrite_c2(image_path)

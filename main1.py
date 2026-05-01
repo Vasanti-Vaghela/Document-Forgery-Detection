@@ -2,6 +2,8 @@ import os
 import cv2
 
 from preprocessing.loader import load_input
+from models.c2_overwrite_wrapper import run_c2
+from models.c3_added_wrapper import run_c3
 from models.c4_removed_wrapper import run_c4
 from models.c5_merge_wrapper import run_c5
 from models.c9_partial_wrapper import run_c9
@@ -35,10 +37,14 @@ def run_pipeline(input_path):
 
         # Run all models
         
+        c2, _ = run_c2(page)
+        c3, _ = run_c3(page)
         c4, _ = run_c4(page)
         c5, _ = run_c5(page)
         c9, _ = run_c9(page)
 
+        all_detections.extend(c2)
+        all_detections.extend(c3)
         all_detections.extend(c4)
         all_detections.extend(c5)
         all_detections.extend(c9)

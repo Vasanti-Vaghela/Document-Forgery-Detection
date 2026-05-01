@@ -4,6 +4,8 @@ import numpy as np
 from pdf2image import convert_from_path
 import os
 
+from preprocessing.loader import POPPLER_PATH
+
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 INPUT_FOLDER = "Claim_Documents"
@@ -16,7 +18,10 @@ os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 def pdf_to_images(pdf_path):
     paths = []
 
-    images = convert_from_path(pdf_path, poppler_path=r"C:\Program Files\poppler-25.07.0\Library\bin")
+    # images = convert_from_path(pdf_path, poppler_path=r"C:\Program Files\poppler-25.07.0\Library\bin")
+    POPPLER_PATH = r"C:\Users\Zaid\Downloads\poppler-25.12.0\Library\bin"
+
+    images = convert_from_path(pdf_path, poppler_path=POPPLER_PATH)
 
 
     for i, img in enumerate(images):
@@ -100,4 +105,5 @@ def run():
 
     print("✅ Done")
 
-run()
+if __name__ == "__main__":
+    run()
