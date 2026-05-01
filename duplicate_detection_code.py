@@ -14,9 +14,9 @@ def load_image(path):
     return img
 
 
-# ----------------------------
+# -------------
 # Preprocessing
-# ----------------------------
+# -------------
 def preprocess_image(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
