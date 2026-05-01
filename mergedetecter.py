@@ -15,7 +15,12 @@ IMG_SIZE = 128
 MODEL_PATH = "merge_model.h5"
 THRESHOLD = 0.5
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+
+if os.name == "nt":  # Windows only
+    possible_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    if os.path.exists(possible_path):
+        pytesseract.pytesseract.tesseract_cmd = possible_path
 
 # -----------------------------
 # ELA

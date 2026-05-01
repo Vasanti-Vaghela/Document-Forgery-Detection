@@ -2,7 +2,7 @@ import os
 import cv2
 from pdf2image import convert_from_path
 
-POPPLER_PATH = r"C:\Program Files\poppler-25.07.0\Library\bin"
+POPPLER_PATH = r"C:\Users\Zaid\Downloads\poppler-25.12.0\Library\bin"
 
 def pdf_to_images(pdf_path, output_folder="temp_pages"):
     os.makedirs(output_folder, exist_ok=True)

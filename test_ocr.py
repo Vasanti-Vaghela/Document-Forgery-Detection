@@ -1,7 +1,12 @@
 
 import pytesseract
 from PIL import Image
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+import os
+
+if os.name == "nt":  # Windows only
+    possible_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    if os.path.exists(possible_path):
+        pytesseract.pytesseract.tesseract_cmd = possible_path
 img = Image.open("text.png.png")
 text = pytesseract.image_to_string(img)
 print(text)
