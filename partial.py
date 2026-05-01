@@ -6,7 +6,10 @@ import os
 
 from preprocessing.loader import POPPLER_PATH
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+if os.name == "nt":  # Windows only
+    possible_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    if os.path.exists(possible_path):
+        pytesseract.pytesseract.tesseract_cmd = possible_path
 
 INPUT_FOLDER = "Claim_Documents"
 OUTPUT_FOLDER = "output"
