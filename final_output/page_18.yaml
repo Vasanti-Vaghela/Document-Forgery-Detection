@@ -1,0 +1,271 @@
+annotations:
+  - category: C4
+    x: 711
+    y: 2065
+    w: 167
+    h: 18
+  - category: C4
+    x: 375
+    y: 2065
+    w: 245
+    h: 18
+  - category: C4
+    x: 1215
+    y: 1992
+    w: 155
+    h: 73
+  - category: C4
+    x: 1124
+    y: 1992
+    w: 52
+    h: 36
+  - category: C4
+    x: 918
+    y: 1992
+    w: 38
+    h: 18
+  - category: C4
+    x: 595
+    y: 1992
+    w: 271
+    h: 36
+  - category: C4
+    x: 1267
+    y: 1937
+    w: 25
+    h: 36
+  - category: C4
+    x: 969
+    y: 1937
+    w: 39
+    h: 18
+  - category: C4
+    x: 284
+    y: 1937
+    w: 297
+    h: 109
+  - category: C4
+    x: 1318
+    y: 1919
+    w: 13
+    h: 73
+  - category: C4
+    x: 1034
+    y: 1919
+    w: 38
+    h: 36
+  - category: C4
+    x: 672
+    y: 1919
+    w: 181
+    h: 54
+  - category: C4
+    x: 608
+    y: 1919
+    w: 38
+    h: 36
+  - category: C4
+    x: 569
+    y: 1901
+    w: 25
+    h: 36
+  - category: C4
+    x: 452
+    y: 1901
+    w: 65
+    h: 54
+  - category: C4
+    x: 1228
+    y: 1846
+    w: 38
+    h: 36
+  - category: C4
+    x: 284
+    y: 1828
+    w: 13
+    h: 90
+  - category: C4
+    x: 1111
+    y: 1827
+    w: 104
+    h: 19
+  - category: C4
+    x: 1318
+    y: 1809
+    w: 52
+    h: 73
+  - category: C4
+    x: 1279
+    y: 1809
+    w: 52
+    h: 91
+  - category: C4
+    x: 401
+    y: 1699
+    w: 491
+    h: 201
+  - category: C4
+    x: 1292
+    y: 1681
+    w: 78
+    h: 110
+  - category: C4
+    x: 1060
+    y: 1553
+    w: 193
+    h: 238
+  - category: C4
+    x: 659
+    y: 1535
+    w: 39
+    h: 18
+  - category: C4
+    x: 452
+    y: 1316
+    w: 26
+    h: 36
+  - category: C4
+    x: 284
+    y: 1316
+    w: 39
+    h: 493
+  - category: C4
+    x: 750
+    y: 1151
+    w: 38
+    h: 19
+  - category: C4
+    x: 956
+    y: 968
+    w: 39
+    h: 19
+  - category: C4
+    x: 620
+    y: 968
+    w: 39
+    h: 19
+  - category: C4
+    x: 788
+    y: 950
+    w: 26
+    h: 37
+  - category: C4
+    x: 284
+    y: 914
+    w: 39
+    h: 420
+  - category: C4
+    x: 310
+    y: 804
+    w: 26
+    h: 37
+  - category: C4
+    x: 439
+    y: 749
+    w: 26
+    h: 55
+  - category: C4
+    x: 297
+    y: 694
+    w: 39
+    h: 92
+  - category: C4
+    x: 866
+    y: 603
+    w: 51
+    h: 91
+  - category: C4
+    x: 401
+    y: 603
+    w: 387
+    h: 146
+  - category: C4
+    x: 633
+    y: 585
+    w: 168
+    h: 18
+  - category: C4
+    x: 465
+    y: 585
+    w: 103
+    h: 18
+  - category: C4
+    x: 310
+    y: 530
+    w: 39
+    h: 91
+  - category: C4
+    x: 775
+    y: 493
+    w: 39
+    h: 19
+  - category: C4
+    x: 478
+    y: 457
+    w: 77
+    h: 18
+  - category: C4
+    x: 284
+    y: 457
+    w: 65
+    h: 55
+  - category: C4
+    x: 620
+    y: 439
+    w: 116
+    h: 18
+  - category: C4
+    x: 1228
+    y: 421
+    w: 155
+    h: 1260
+  - category: C4
+    x: 1215
+    y: 420
+    w: 38
+    h: 19
+  - category: C4
+    x: 1305
+    y: 366
+    w: 52
+    h: 36
+  - category: C4
+    x: 1150
+    y: 329
+    w: 39
+    h: 18
+  - category: C4
+    x: 1099
+    y: 329
+    w: 38
+    h: 36
+  - category: C4
+    x: 1163
+    y: 183
+    w: 51
+    h: 36
+  - category: C4
+    x: 1254
+    y: 164
+    w: 64
+    h: 128
+  - category: C4
+    x: 1305
+    y: 146
+    w: 65
+    h: 110
+  - category: C4
+    x: 1021
+    y: 146
+    w: 38
+    h: 37
+  - category: C4
+    x: 930
+    y: 146
+    w: 26
+    h: 37
+  - category: C4
+    x: 78
+    y: 91
+    w: 90
+    h: 19
